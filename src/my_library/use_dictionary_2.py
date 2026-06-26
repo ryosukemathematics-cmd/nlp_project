@@ -9,30 +9,30 @@ def load(path):
             word = l.split("\t")
             if len(word) < 2:
                 continue
+            #data.txtと同じ前処理を辞書に実行することにより表現の微妙な違いによる見逃しを極力減らす
             word[1] = word[1].replace(" ", "")
             word[1] = [token.base_form for token in t.tokenize(word[1])]
             value = -1 if word[0].split("（")[0] == "ネガ" else 1
             key = ""
             i = 0
-            while not(key in dic) and i < len(word[1]):
+            #keyが重複したら後ろの単語を足していく、前の方からkeyが全て入っている（※「耳　が　痛い」というkeyがあれば「耳」、「耳　が」というkeyも存在している）
+            while not(key in dic or key == "") and i < len(word[1]):
                 key = key + word[1][i]
                 i += 1
-            dic[key] = [value]
+            dic[key] = value
     return dic
 
 def count(dic, sentence):
     result = []
     for i in range(len(sentence)):
-        if sentence[i][1] in dic:
-            result.append(dic[sentence[i][1]][0])
+        phrase = sentence[i][1]
+        if phrase in dic:
+            j = i
+            #i番目の単語とその後ろの単語を足していって辞書に含まれるギリギリの境界を調べる(18行目のコメントゆえ、a<bかつa個足して辞書になくb個足すと辞書にあるということはない)
+            while phrase in dic and (phrase + sentence[j][1]) in dic and j < len(sentence):
+                phrase = phrase + sentence[j][1]
+                j += 1
+            result.append(dic(phrase))
+        else:
+            result.append(0)
     return result
-
-#def count(dic, sentence):
-    count_statistics = []
-    sentence = sentence.split(" ")
-    for word in sentence:
-        tmp1 = 0
-        if word in dic:
-            tmp = dic[word]
-        count_statistics.append(tmp)
-    return count_statistics

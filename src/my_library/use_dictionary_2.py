@@ -32,7 +32,5 @@ def count(dic, sentence):
             while phrase in dic and (phrase + sentence[j][1]) in dic and j < len(sentence):
                 phrase = phrase + sentence[j][1]
                 j += 1
-            result.append(dic(phrase))
-        else:
-            result.append(0)
+            result.append(dic[phrase])
     return result

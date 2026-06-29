@@ -13,12 +13,12 @@ def load(path):
             word[1] = word[1].replace(" ", "")
             word[1] = [token.base_form for token in t.tokenize(word[1])]
             value = -1 if word[0].split("（")[0] == "ネガ" else 1
-            key = ""
             i = 0
+            key = word[1][i]
             #keyが重複したら後ろの単語を足していく、前の方からkeyが全て入っている（※「耳　が　痛い」というkeyがあれば「耳」、「耳　が」というkeyも存在している）
-            while not(key in dic or key == "") and i < len(word[1]):
-                key = key + word[1][i]
+            while key in dic and i + 1 < len(word[1]):
                 i += 1
+                key = key + word[1][i]
             dic[key] = value
     return dic
 
